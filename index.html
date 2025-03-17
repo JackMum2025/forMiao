@@ -11,8 +11,7 @@
             background-color: #f4f4f4;
         }
         #content { display: none; }
-        /* 改成 visibility: hidden 避免被优化掉 */
-        audio { visibility: hidden; height: 0; }
+        iframe, audio { display: none; }
     </style>
 </head>
 <body>
@@ -34,7 +33,12 @@
     <div id="content">
         <h2>🎉 欢迎！你答对了问题！</h2>
         
-        <audio id="bgMusic" autoplay loop muted>
+        <img src="https://media-hosting.imagekit.io//2d070e59aac34f5f/IMG_2749.JPG?Expires=1836814000&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=l7tHSxF4afzrI6huMsFPeP7k-eG5XuPuMOrDlP8lgo0MQxCy4s1qh2lsuAmZoj8tyIh~KQUy~rPpc7gDAoCHfux1cQqYlaRqUVAXuKSm-bT6m51dq0Pzgc2c4ys83xLgmNjaKpfzogAfkcD5HFirMNreCJ8YiI-txwD-Vd9qPfRf9DeQ2ZfMkOPXZWTjWTIzAwTn7tzkf9nTUlwVqXfRvm11hv4ZxfqsvOX7mTLnBLg~erIRY96H9y4SHFcJK0MIQYM6Ap6zbIF6SkYTzcac~iJbhqPM9~~qSAozi9ulv4hphWaTZpANfHpnTDTX8wy5lZHNIubVMnSavzS-1GG3yw__" alt="奖励图片" style="max-width: 80%;">
+        
+        <h2>📖 今日日记</h2>
+        <pre id="diary-content">加载中...</pre>
+        
+        <audio id="bgMusic" autoplay loop>
             <source src="https://jackmum2025.github.io/forMiao/Front.mp3" type="audio/mpeg">
         </audio>
         
@@ -44,18 +48,6 @@
     </div>
 
     <script>
-        window.onload = function () {
-            let bgMusic = document.getElementById("bgMusic");
-            
-            // 1. 解除静音，让浏览器允许播放
-            bgMusic.muted = false;
-
-            // 2. 延迟播放，绕过部分浏览器限制
-            setTimeout(() => {
-                bgMusic.play().catch(error => console.log("自动播放失败", error));
-            }, 1000);
-        };
-
         function checkAnswers() {
             let q1 = document.getElementById("q1").value.toLowerCase();
             let q2 = document.getElementById("q2").value.toLowerCase();
@@ -65,16 +57,27 @@
                 (q2 === "vitamin c" || q2 === "vit c") &&
                 (q3 === "一二")) {
                 document.getElementById("content").style.display = "block";
-
-                let bgMusic = document.getElementById("bgMusic");
-                let newMusic = document.getElementById("newMusic");
-
-                // 停止原来的音乐，播放新音乐
-                bgMusic.pause();
-                newMusic.play().catch(error => console.log("新音乐播放失败", error));
+                changeMusic(); // 切换音乐
+                loadDiary();  // 读取日记
             } else {
                 alert("答案不对哦，试试再想想？");
             }
+        }
+
+        function changeMusic() {
+            document.getElementById("bgMusic").pause();  // 停止原音乐
+            document.getElementById("newMusic").play();  // 播放新音乐
+        }
+
+        function loadDiary() {
+            fetch('https://jackmum2025.github.io/forMiao/diary.txt')  // 改成你的 GitHub Pages 日记路径
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("diary-content").innerText = data;
+                })
+                .catch(error => {
+                    document.getElementById("diary-content").innerText = "无法加载日记";
+                });
         }
     </script>
 
