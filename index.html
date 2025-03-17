@@ -32,32 +32,36 @@
     <div id="content">
         <h2>欢迎！你答对了问题 🎉</h2>
         <img src="https://media-hosting.imagekit.io//2d070e59aac34f5f/IMG_2749.JPG?Expires=1836814000&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=l7tHSxF4afzrI6huMsFPeP7k-eG5XuPuMOrDlP8lgo0MQxCy4s1qh2lsuAmZoj8tyIh~KQUy~rPpc7gDAoCHfux1cQqYlaRqUVAXuKSm-bT6m51dq0Pzgc2c4ys83xLgmNjaKpfzogAfkcD5HFirMNreCJ8YiI-txwD-Vd9qPfRf9DeQ2ZfMkOPXZWTjWTIzAwTn7tzkf9nTUlwVqXfRvm11hv4ZxfqsvOX7mTLnBLg~erIRY96H9y4SHFcJK0MIQYM6Ap6zbIF6SkYTzcac~iJbhqPM9~~qSAozi9ulv4hphWaTZpANfHpnTDTX8wy5lZHNIubVMnSavzS-1GG3yw__" alt="神秘奖励" style="max-width: 100%;">
-        <p>📖 <strong>每日日记：</strong> 这里可以写你的日记内容。</p>
-    </div>
-    
-    <iframe width="560" height="315" 
-        src="https://www.youtube-nocookie.com/embed/mhpRipG9Zss?autoplay=1&loop=1&playlist=mhpRipG9Zss" 
-        frameborder="0" 
-        allow="autoplay" 
-        allowfullscreen>
-</iframe>
-    
-    <script>
-        function checkAnswers() {
-            let answer1 = document.getElementById("q1").value.trim().toLowerCase();
-            let answer2 = document.getElementById("q2").value.trim().toLowerCase();
-            let answer3 = document.getElementById("q3").value.trim();
-            
-            let correct1 = ["mcdonalds", "mcd"];
-            let correct2 = ["vitamin c", "vit c"];
-            let correct3 = "一二";
-            
-            if (correct1.includes(answer1) && correct2.includes(answer2) && answer3 === correct3) {
-                document.getElementById("content").style.display = "block";
-            } else {
-                alert("答案错误，请再试一次！");
-            }
+        <div id="diary">
+    <h2>📖 今日日记</h2>
+    <pre id="diary-content">加载中...</pre>
+</div>
+
+<iframe id="bgMusic" width="0" height="0" src="https://www.youtube.com/embed/mhpRipG9Zss?autoplay=1&loop=1&playlist=mhpRipG9Zss" frameborder="0" allow="autoplay"></iframe>
+
+<audio id="newMusic" src="https://jumpshare.com/s/9x9mtdw8mhMIW7PAp1Iw" type="audio/mpeg"></audio>
+
+<script>
+    function changeMusic() {
+        document.getElementById("bgMusic").remove(); // 停止YouTube音乐
+        let newAudio = document.getElementById("newMusic");
+        newAudio.play(); // 播放新歌曲
+    }
+
+    function checkAnswers() {
+        let q1 = document.getElementById("q1").value.toLowerCase();
+        let q2 = document.getElementById("q2").value.toLowerCase();
+        let q3 = document.getElementById("q3").value.toLowerCase();
+
+        if ((q1 === "mcdonalds" || q1 === "mcd") &&
+            (q2 === "vitamin c" || q2 === "vit c") &&
+            (q3 === "一二")) {
+            document.getElementById("reward").style.display = "block"; // 显示奖励
+            changeMusic(); // 切换音乐
+        } else {
+            alert("答案不对哦，试试再想想？");
         }
-    </script>
+    }
+</script>
 </body>
 </html>
