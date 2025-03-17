@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>答对问题才能阅读博客</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        #content { display: none; }
+        iframe { display: none; }
+    </style>
+</head>
+<body>
+    <h2>请回答以下问题才能查看博客内容：</h2>
+    
+    <p>1. 我们最长一起吃的是什么？</p>
+    <input type="text" id="q1" placeholder="请输入答案">
+    
+    <p>2. 我每天会提醒你吃的是什么？</p>
+    <input type="text" id="q2" placeholder="请输入答案">
+    
+    <p>3. 你的代表性玩偶是什么名字？</p>
+    <input type="text" id="q3" placeholder="请输入答案">
+    
+    <br><br>
+    <button onclick="checkAnswers()">提交</button>
+    
+    <div id="content">
+        <h2>欢迎！你答对了问题 🎉</h2>
+        <img src="https://media-hosting.imagekit.io//93ba14b3cee04547/440465935_3815428582075905_3928012359569690545_n.jpg?Expires=1836812342&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=JVX3CG8IIcE0Nr49NHVxvaluLWnYgYf7-2m5-Mr0dqbXuhmhq2bw2wueuXzFogB9A3Gow~5DM0-Xkt9lSJzfAs3lkjLWS9T6kB64HrTXIQq3t~XxHifdImPJrF6JpB4D6-QdwpiVgHnj69BGxVE2TAdMQUVHy594qv9t1kYfsgAfxaFn8fUYuVLFT0g4RUPXtz3hN4Zzer3ygSvCFOHMVSsw-dk-T47khb4e7xfRb8xorc40pQx0pGb9j7OxReTr8TU-XcMVjauYGopu0L4uSt9z0ygaqIOPqavCV81FvvVAymDF67UENdscfm6-2bgBvm0aJsGCTQU9Tcr7TEpnkA__" width="300" alt="解锁照片">
+        <p>📖 <strong>每日日记：</strong> 这里可以写你的日记内容。</p>
+    </div>
+    
+    <iframe id="bg-music" width="0" height="0" src="https://www.youtube.com/embed/mhpRipG9Zss?autoplay=1&loop=1&playlist=mhpRipG9Zss" frameborder="0" allow="autoplay"></iframe>
+    
+    <script>
+        function checkAnswers() {
+            let answer1 = document.getElementById("q1").value.trim().toLowerCase();
+            let answer2 = document.getElementById("q2").value.trim().toLowerCase();
+            let answer3 = document.getElementById("q3").value.trim();
+            
+            let correct1 = ["mcdonalds", "mcd"];
+            let correct2 = ["vitamin c", "vit c"];
+            let correct3 = "一二";
+            
+            if (correct1.includes(answer1) && correct2.includes(answer2) && answer3 === correct3) {
+                document.getElementById("content").style.display = "block";
+            } else {
+                alert("答案错误，请再试一次！");
+            }
+        }
+    </script>
+</body>
+</html>
