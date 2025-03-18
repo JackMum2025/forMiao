@@ -6,19 +6,61 @@
     <title>答对问题才能阅读博客</title>
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             background-color: #f4f4f4;
-            overflow: hidden;
+            overflow-y: auto; /* ✅ 允许滚动 */
+            height: 100vh;
         }
-        #content { display: none; }
+
+        #content { 
+            display: none; 
+            padding: 20px;
+        }
+
         iframe, audio { display: none; }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        pre {
+            white-space: pre-wrap; /* ✅ 让日记适配手机端 */
+            word-wrap: break-word;
+            text-align: left;
+            background: #fff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
         .gif-container img {
             position: absolute;
             width: 100px;
             animation: fall linear infinite;
         }
+
         @keyframes fall {
             from { transform: translateY(-100px); opacity: 1; }
             to { transform: translateY(100vh); opacity: 0; }
@@ -27,29 +69,31 @@
 </head>
 <body>
 
-    <h2>请回答以下问题才能查看博客内容：</h2>
-    
-    <p>1. 我们最长一起吃的是什么？</p>
-    <input type="text" id="q1" placeholder="请输入答案">
-    
-    <p>2. 我每天会提醒你吃的是什么？</p>
-    <input type="text" id="q2" placeholder="请输入答案">
-    
-    <p>3. 你的代表性公仔是什么名字？</p>
-    <input type="text" id="q3" placeholder="请输入答案">
+    <div class="container">
+        <h2>请回答以下问题才能查看博客内容：</h2>
+        
+        <p>1. 我们最长一起吃的是什么？</p>
+        <input type="text" id="q1" placeholder="请输入答案">
+        
+        <p>2. 我每天会提醒你吃的是什么？</p>
+        <input type="text" id="q2" placeholder="请输入答案">
+        
+        <p>3. 你的代表性公仔是什么名字？</p>
+        <input type="text" id="q3" placeholder="请输入答案">
 
-    <p>4. 我目前要弹给你听的钢琴曲是什么名字？</p>
-    <input type="text" id="q4" placeholder="请输入答案">
-    
-    <br><br>
-    <button onclick="checkAnswers()">提交</button>
-    
+        <p>4. 我目前要弹给你听的钢琴曲是什么名字？</p>
+        <input type="text" id="q4" placeholder="请输入答案">
+        
+        <br><br>
+        <button onclick="checkAnswers()">提交</button>
+    </div>
+
     <div id="content">
         <h2>🎉 欢迎！你答对了问题！</h2>
         
         <img src="https://media-hosting.imagekit.io//2d070e59aac34f5f/IMG_2749.JPG?Expires=1836814000&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=l7tHSxF4afzrI6huMsFPeP7k-eG5XuPuMOrDlP8lgo0MQxCy4s1qh2lsuAmZoj8tyIh~KQUy~rPpc7gDAoCHfux1cQqYlaRqUVAXuKSm-bT6m51dq0Pzgc2c4ys83xLgmNjaKpfzogAfkcD5HFirMNreCJ8YiI-txwD-Vd9qPfRf9DeQ2ZfMkOPXZWTjWTIzAwTn7tzkf9nTUlwVqXfRvm11hv4ZxfqsvOX7mTLnBLg~erIRY96H9y4SHFcJK0MIQYM6Ap6zbIF6SkYTzcac~iJbhqPM9~~qSAozi9ulv4hphWaTZpANfHpnTDTX8wy5lZHNIubVMnSavzS-1GG3yw__" 
-            alt="奖励图片" style="max-width: 80%;">
-        
+            alt="奖励图片" style="max-width: 100%;">
+
         <h2>📖 今日日记</h2>
         <pre id="diary-content">加载中...</pre>
     </div>
@@ -58,16 +102,23 @@
     <div class="gif-container"></div>
 
     <!-- 背景音乐 -->
-    <audio id="bgMusic" loop autoplay>
+    <audio id="bgMusic" loop>
         <source id="musicSource" src="https://s33.aconvert.com/convert/p3r68-cdx67/261fx-i49yo.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-      document.addEventListener("click", function() {
-    let bgMusic = document.getElementById("bgMusic");
-    bgMusic.muted = false;
-    bgMusic.play().catch(error => console.log("用户交互后仍播放失败", error));
-}, { once: true }); // 只触发一次
+        document.addEventListener("DOMContentLoaded", function() {
+            let bgMusic = document.getElementById("bgMusic");
+
+            document.addEventListener("click", function() {
+                bgMusic.muted = false;
+                bgMusic.play().catch(error => console.log("用户交互后仍播放失败", error));
+            }, { once: true });
+
+            setTimeout(() => {
+                bgMusic.play().catch(error => console.log("自动播放失败，等待用户点击", error));
+            }, 2000);
+        });
 
         function checkAnswers() {
             let q1 = document.getElementById("q1").value.toLowerCase();
@@ -108,20 +159,7 @@
 
         function createFallingGifs() {
             const gifUrls = [
-                "https://p4.itc.cn/images01/20230509/6ea2213ddcd84ece8c6fb244b4c5d578.gif",
-                "https://p4.itc.cn/images01/20230509/521a12aaf47248cd88423200901d3225.gif",
-                "https://p7.itc.cn/images01/20230509/90da6241372a4bff8c923320b1a4edca.gif",
-                "https://p6.itc.cn/images01/20230509/267cebb700c54c07879153729f849bda.gif",
-                "https://p2.itc.cn/images01/20230509/8bc232fd2e484468ae504d91b46c6541.gif",
-                "https://p6.itc.cn/images01/20230509/9ff5113e2e0b49f69f41dd9ad7d6be14.gif",
-                "https://p9.itc.cn/images01/20230509/45444cf11e2140338d2d5b56136d767c.gif",
-                "https://p0.itc.cn/images01/20230509/41dbcf9a38c64576a3c05865e5deb498.gif",
-                "https://p8.itc.cn/images01/20230509/bff03ef64e8b4502a0d39bc455e44cf3.gif",
-                "https://p5.itc.cn/images01/20230509/a537f537a4e04116a182840ed251bfa4.gif",
-                "https://p7.itc.cn/images01/20230509/96a918dd65984c199a6eb5ce247f4ae6.gif",
-                "https://p6.itc.cn/images01/20230509/98cbc8736d1a42c78f549836aedd5720.gif",
-                "https://p9.itc.cn/images01/20230509/060c1550b9ed4592b53bedc5702f8767.gif",
-                "https://p4.itc.cn/images01/20230509/2d2b26049e9e415b9e542176db84195c.gif"
+                "https://p4.itc.cn/images01/20230509/6ea2213ddcd84ece8c6fb244b4c5d578.gif"
             ];
             const container = document.querySelector(".gif-container");
             setInterval(() => {
