@@ -26,9 +26,6 @@
     
     <p>3. 你的代表性公仔是什么名字？</p>
     <input type="text" id="q3" placeholder="请输入答案">
-
-    <p>4. 我目前要弹给你听的钢琴曲是什么名字？</p>
-    <input type="text" id="q3" placeholder="请输入答案">
     
     <br><br>
     <button onclick="checkAnswers()">提交</button>
@@ -55,13 +52,11 @@
             let q1 = document.getElementById("q1").value.toLowerCase();
             let q2 = document.getElementById("q2").value.toLowerCase();
             let q3 = document.getElementById("q3").value.toLowerCase();
-            let q4 = document.getElementById("q3").value.toLowerCase();
 
 
             if ((q1 === "mcdonalds" || q1 === "mcd") &&
                 (q2 === "vitamin c" || q2 === "vit c") &&
-                (q3 === "一二")) &&
-               （q4 === "童话"))
+                (q3 === "一二"))
             {
                 document.getElementById("content").style.display = "block";
                 changeMusic(); // 切换音乐
