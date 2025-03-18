@@ -58,20 +58,24 @@
     <div class="gif-container"></div>
 
     <!-- 背景音乐 -->
-    <audio id="bgMusic" loop>
+    <audio id="bgMusic" loop autoplay>
         <source id="musicSource" src="https://s33.aconvert.com/convert/p3r68-cdx67/261fx-i49yo.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let bgMusic = document.getElementById("bgMusic");
-            function playMusic() {
-                bgMusic.muted = false;
-                bgMusic.play().catch(error => console.log("自动播放失败，等待用户互动", error));
-            }
-            document.addEventListener("click", playMusic, { once: true });
-            document.addEventListener("touchstart", playMusic, { once: true });
-        });
+       document.addEventListener("DOMContentLoaded", function () {
+    let bgMusic = document.getElementById("bgMusic");
+    bgMusic.muted = true; // 先静音
+    bgMusic.play().catch(error => console.log("自动播放失败，等待用户互动", error));
+
+    // 用户交互时取消静音
+    document.addEventListener("click", function() {
+        bgMusic.muted = false;
+    }, { once: true });
+    document.addEventListener("touchstart", function() {
+        bgMusic.muted = false;
+    }, { once: true });
+});
 
         function checkAnswers() {
             let q1 = document.getElementById("q1").value.toLowerCase();
