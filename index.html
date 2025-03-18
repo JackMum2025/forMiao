@@ -72,16 +72,19 @@
     <div class="container">
         <h2>请回答以下问题才能查看博客内容：</h2>
         
-        <p>1. 我们最长一起吃的是什么？</p>
+        <p>1. 你曾经为了什么东西生气我，现在想起来觉得好笑又好气？</p>
         <input type="text" id="q1" placeholder="请输入答案">
         
-        <p>2. 我每天会提醒你吃的是什么？</p>
+        <p>2. 有一首歌每次响起都会让我们想起彼此，是什么歌？</p>
         <input type="text" id="q2" placeholder="请输入答案">
         
-        <p>3. 你的代表性公仔是什么名字？</p>
+        <p>3. 我们在一起最长吃的东西是什么？</p>
         <input type="text" id="q3" placeholder="请输入答案">
 
-        <p>4. 我目前要弹给你听的钢琴曲是什么名字？</p>
+        <p>4. 我每天都会提醒你吃什么东西？</p>
+        <input type="text" id="q4" placeholder="请输入答案">
+        
+        <p>5. 你的梦想职业，是什么？</p>
         <input type="text" id="q4" placeholder="请输入答案">
         
         <br><br>
@@ -126,10 +129,11 @@
         let q3 = document.getElementById("q3").value.toLowerCase();
         let q4 = document.getElementById("q4").value.toLowerCase();
 
-        if ((q1 === "mcdonalds" || q1 === "mcd") &&
-            (q2 === "vitamin c" || q2 === "vit c") &&
-            (q3 === "一二") &&
-            (q4 === "童话")) {
+        if ((q1 === "椅子" || q1 === "chair") &&
+            (q2 === "如果可以") &&
+            (q3 === "vitamin c" || q3 === "vit c") &&
+            (q4 === "mcdonalds" || q4 === "mcd") &&
+            (q5 === "老师" || q5 === "小学老师")) {
             document.getElementById("content").style.display = "block";
             changeMusic();
             loadDiary();
