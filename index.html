@@ -63,21 +63,11 @@
     </audio>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("click", function() {
     let bgMusic = document.getElementById("bgMusic");
-    
-    bgMusic.play().catch(error => console.log("自动播放失败，等待用户交互", error));
-
-    document.addEventListener("click", function() {
-        bgMusic.muted = false;
-        bgMusic.play().catch(error => console.log("用户点击后仍播放失败", error));
-    }, { once: true });
-
-    document.addEventListener("touchstart", function() {
-        bgMusic.muted = false;
-        bgMusic.play().catch(error => console.log("用户触摸后仍播放失败", error));
-    }, { once: true });
-});
+    bgMusic.muted = false;
+    bgMusic.play().catch(error => console.log("用户交互后仍播放失败", error));
+}, { once: true }); // 只触发一次
 
         function checkAnswers() {
             let q1 = document.getElementById("q1").value.toLowerCase();
