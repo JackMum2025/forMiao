@@ -121,22 +121,23 @@
         });
 
         function checkAnswers() {
-            let q1 = document.getElementById("q1").value.toLowerCase();
-            let q2 = document.getElementById("q2").value.toLowerCase();
-            let q3 = document.getElementById("q3").value.toLowerCase();
-            let q4 = document.getElementById("q4").value.toLowerCase();
+        let q1 = document.getElementById("q1").value.toLowerCase();
+        let q2 = document.getElementById("q2").value.toLowerCase();
+        let q3 = document.getElementById("q3").value.toLowerCase();
+        let q4 = document.getElementById("q4").value.toLowerCase();
 
-            if ((q1 === "mcdonalds" || q1 === "mcd") &&
-                (q2 === "vitamin c" || q2 === "vit c") &&
-                (q3 === "一二") &&
-                (q4 === "童话")) {
-                document.getElementById("content").style.display = "block";
-                changeMusic();
-                loadDiary();
-            } else {
-                alert("答案不对哦，试试再想想？");
-            }
+        if ((q1 === "mcdonalds" || q1 === "mcd") &&
+            (q2 === "vitamin c" || q2 === "vit c") &&
+            (q3 === "一二") &&
+            (q4 === "童话")) {
+            document.getElementById("content").style.display = "block";
+            changeMusic();
+            loadDiary();
+            createFallingGifs(); // 只有答对后才调用 GIF 落下效果
+        } else {
+            alert("答案不对哦，试试再想想？");
         }
+    }
 
         function changeMusic() {
             let bgMusic = document.getElementById("bgMusic");
@@ -174,15 +175,15 @@
                 "https://p9.itc.cn/images01/20230509/060c1550b9ed4592b53bedc5702f8767.gif",
                 "https://p4.itc.cn/images01/20230509/2d2b26049e9e415b9e542176db84195c.gif"
             ];
-            const container = document.querySelector(".gif-container");
-            setInterval(() => {
-                const img = document.createElement("img");
-                img.src = gifUrls[Math.floor(Math.random() * gifUrls.length)];
-                img.style.left = Math.random() * 100 + "vw";
-                img.style.animationDuration = Math.random() * 3 + 2 + "s";
-                container.appendChild(img);
-                setTimeout(() => img.remove(), 5000);
-            }, 300);
+           const container = document.querySelector(".gif-container");
+        setInterval(() => {
+            const img = document.createElement("img");
+            img.src = gifUrls[Math.floor(Math.random() * gifUrls.length)];
+            img.style.left = Math.random() * 100 + "vw";
+            img.style.animationDuration = Math.random() * 3 + 2 + "s";
+            container.appendChild(img);
+            setTimeout(() => img.remove(), 5000);
+        }, 300);
         }
         createFallingGifs();
     </script>
