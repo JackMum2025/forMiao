@@ -63,17 +63,19 @@
     </audio>
 
     <script>
-       document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("DOMContentLoaded", function () {
     let bgMusic = document.getElementById("bgMusic");
-    bgMusic.muted = true; // 先静音
-    bgMusic.play().catch(error => console.log("自动播放失败，等待用户互动", error));
+    
+    bgMusic.play().catch(error => console.log("自动播放失败，等待用户交互", error));
 
-    // 用户交互时取消静音
     document.addEventListener("click", function() {
         bgMusic.muted = false;
+        bgMusic.play().catch(error => console.log("用户点击后仍播放失败", error));
     }, { once: true });
+
     document.addEventListener("touchstart", function() {
         bgMusic.muted = false;
+        bgMusic.play().catch(error => console.log("用户触摸后仍播放失败", error));
     }, { once: true });
 });
 
