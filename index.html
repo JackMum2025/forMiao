@@ -14,16 +14,14 @@
         }
         #content { display: none; }
         iframe, audio { display: none; }
-        .gif {
+        .gif-container img {
             position: absolute;
-            width: 80px;
-            height: auto;
-            pointer-events: none;
+            width: 100px;
             animation: fall linear infinite;
         }
         @keyframes fall {
-            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+            from { transform: translateY(-100px); opacity: 1; }
+            to { transform: translateY(100vh); opacity: 0; }
         }
     </style>
 </head>
@@ -49,42 +47,97 @@
     <div id="content">
         <h2>🎉 欢迎！你答对了问题！</h2>
         
+        <img src="https://media-hosting.imagekit.io//2d070e59aac34f5f/IMG_2749.JPG?Expires=1836814000&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=l7tHSxF4afzrI6huMsFPeP7k-eG5XuPuMOrDlP8lgo0MQxCy4s1qh2lsuAmZoj8tyIh~KQUy~rPpc7gDAoCHfux1cQqYlaRqUVAXuKSm-bT6m51dq0Pzgc2c4ys83xLgmNjaKpfzogAfkcD5HFirMNreCJ8YiI-txwD-Vd9qPfRf9DeQ2ZfMkOPXZWTjWTIzAwTn7tzkf9nTUlwVqXfRvm11hv4ZxfqsvOX7mTLnBLg~erIRY96H9y4SHFcJK0MIQYM6Ap6zbIF6SkYTzcac~iJbhqPM9~~qSAozi9ulv4hphWaTZpANfHpnTDTX8wy5lZHNIubVMnSavzS-1GG3yw__" 
+            alt="奖励图片" style="max-width: 80%;">
+        
         <h2>📖 今日日记</h2>
         <pre id="diary-content">加载中...</pre>
     </div>
 
+    <!-- GIF 飘落效果 -->
+    <div class="gif-container"></div>
+
+    <!-- 背景音乐 -->
+    <audio id="bgMusic" loop>
+        <source id="musicSource" src="https://s33.aconvert.com/convert/p3r68-cdx67/261fx-i49yo.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
-        const gifs = [
-            "https://p4.itc.cn/images01/20230509/6ea2213ddcd84ece8c6fb244b4c5d578.gif",
-            "https://p4.itc.cn/images01/20230509/521a12aaf47248cd88423200901d3225.gif",
-            "https://p7.itc.cn/images01/20230509/90da6241372a4bff8c923320b1a4edca.gif",
-            "https://p6.itc.cn/images01/20230509/267cebb700c54c07879153729f849bda.gif",
-            "https://p2.itc.cn/images01/20230509/8bc232fd2e484468ae504d91b46c6541.gif",
-            "https://p4.itc.cn/images01/20230509/2d2b26049e9e415b9e542176db84195c.gif",
-            "https://p6.itc.cn/images01/20230509/9ff5113e2e0b49f69f41dd9ad7d6be14.gif",
-            "https://p9.itc.cn/images01/20230509/45444cf11e2140338d2d5b56136d767c.gif",
-            "https://p0.itc.cn/images01/20230509/41dbcf9a38c64576a3c05865e5deb498.gif",
-            "https://p8.itc.cn/images01/20230509/bff03ef64e8b4502a0d39bc455e44cf3.gif",
-            "https://p5.itc.cn/images01/20230509/a537f537a4e04116a182840ed251bfa4.gif",
-            "https://p7.itc.cn/images01/20230509/96a918dd65984c199a6eb5ce247f4ae6.gif",
-            "https://p6.itc.cn/images01/20230509/98cbc8736d1a42c78f549836aedd5720.gif",
-            "https://p9.itc.cn/images01/20230509/060c1550b9ed4592b53bedc5702f8767.gif"
-        ];
-        
-        function createFallingGif() {
-            const gif = document.createElement("img");
-            gif.src = gifs[Math.floor(Math.random() * gifs.length)];
-            gif.className = "gif";
-            gif.style.left = Math.random() * window.innerWidth + "px";
-            gif.style.animationDuration = (5 + Math.random() * 5) + "s";
-            gif.style.width = (50 + Math.random() * 50) + "px";
-            
-            document.body.appendChild(gif);
-            
-            setTimeout(() => { gif.remove(); }, 10000);
+        document.addEventListener("DOMContentLoaded", function () {
+            let bgMusic = document.getElementById("bgMusic");
+            function playMusic() {
+                bgMusic.muted = false;
+                bgMusic.play().catch(error => console.log("自动播放失败，等待用户互动", error));
+            }
+            document.addEventListener("click", playMusic, { once: true });
+            document.addEventListener("touchstart", playMusic, { once: true });
+        });
+
+        function checkAnswers() {
+            let q1 = document.getElementById("q1").value.toLowerCase();
+            let q2 = document.getElementById("q2").value.toLowerCase();
+            let q3 = document.getElementById("q3").value.toLowerCase();
+            let q4 = document.getElementById("q4").value.toLowerCase();
+
+            if ((q1 === "mcdonalds" || q1 === "mcd") &&
+                (q2 === "vitamin c" || q2 === "vit c") &&
+                (q3 === "一二") &&
+                (q4 === "童话")) {
+                document.getElementById("content").style.display = "block";
+                changeMusic();
+                loadDiary();
+            } else {
+                alert("答案不对哦，试试再想想？");
+            }
         }
-        
-        setInterval(createFallingGif, 500);
+
+        function changeMusic() {
+            let bgMusic = document.getElementById("bgMusic");
+            let musicSource = document.getElementById("musicSource");
+            musicSource.src = "https://jackmum2025.github.io/forMM/Sparkle%20-%20movie%20ver%20(mp3cut.net)%20(4).mp3";
+            bgMusic.load();
+            bgMusic.play().catch(error => console.log("切换音乐失败", error));
+        }
+
+        function loadDiary() {
+            fetch('https://jackmum2025.github.io/forMiao/diary.txt')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("diary-content").innerText = data;
+                })
+                .catch(error => {
+                    document.getElementById("diary-content").innerText = "无法加载日记";
+                });
+        }
+
+        function createFallingGifs() {
+            const gifUrls = [
+                "https://p4.itc.cn/images01/20230509/6ea2213ddcd84ece8c6fb244b4c5d578.gif",
+                "https://p4.itc.cn/images01/20230509/521a12aaf47248cd88423200901d3225.gif",
+                "https://p7.itc.cn/images01/20230509/90da6241372a4bff8c923320b1a4edca.gif",
+                "https://p6.itc.cn/images01/20230509/267cebb700c54c07879153729f849bda.gif",
+                "https://p2.itc.cn/images01/20230509/8bc232fd2e484468ae504d91b46c6541.gif",
+                "https://p6.itc.cn/images01/20230509/9ff5113e2e0b49f69f41dd9ad7d6be14.gif",
+                "https://p9.itc.cn/images01/20230509/45444cf11e2140338d2d5b56136d767c.gif",
+                "https://p0.itc.cn/images01/20230509/41dbcf9a38c64576a3c05865e5deb498.gif",
+                "https://p8.itc.cn/images01/20230509/bff03ef64e8b4502a0d39bc455e44cf3.gif",
+                "https://p5.itc.cn/images01/20230509/a537f537a4e04116a182840ed251bfa4.gif",
+                "https://p7.itc.cn/images01/20230509/96a918dd65984c199a6eb5ce247f4ae6.gif",
+                "https://p6.itc.cn/images01/20230509/98cbc8736d1a42c78f549836aedd5720.gif",
+                "https://p9.itc.cn/images01/20230509/060c1550b9ed4592b53bedc5702f8767.gif",
+                "https://p4.itc.cn/images01/20230509/2d2b26049e9e415b9e542176db84195c.gif"
+            ];
+            const container = document.querySelector(".gif-container");
+            setInterval(() => {
+                const img = document.createElement("img");
+                img.src = gifUrls[Math.floor(Math.random() * gifUrls.length)];
+                img.style.left = Math.random() * 100 + "vw";
+                img.style.animationDuration = Math.random() * 3 + 2 + "s";
+                container.appendChild(img);
+                setTimeout(() => img.remove(), 5000);
+            }, 300);
+        }
+        createFallingGifs();
     </script>
 </body>
 </html>
