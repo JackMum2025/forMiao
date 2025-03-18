@@ -12,7 +12,7 @@
             background-color: #f4f4f4;
             overflow: hidden;
         }
-           .falling-gif {
+        .falling-gif {
         position: fixed;
         width: 80px; /* 可调整 */
         height: auto;
@@ -75,22 +75,25 @@
         });
 
         function checkAnswers() {
-            let q1 = document.getElementById("q1").value.toLowerCase();
-            let q2 = document.getElementById("q2").value.toLowerCase();
-            let q3 = document.getElementById("q3").value.toLowerCase();
-            let q4 = document.getElementById("q4").value.toLowerCase();
+    let q1 = document.getElementById("q1").value.toLowerCase();
+    let q2 = document.getElementById("q2").value.toLowerCase();
+    let q3 = document.getElementById("q3").value.toLowerCase();
+    let q4 = document.getElementById("q4").value.toLowerCase();
 
-            if ((q1 === "mcdonalds" || q1 === "mcd") &&
-                (q2 === "vitamin c" || q2 === "vit c") &&
-                (q3 === "一二") &&
-                (q4 === "童话")) {
-                document.getElementById("content").style.display = "block";
-                changeMusic();
-                loadDiary();
-            } else {
-                alert("答案不对哦，试试再想想？");
-            }
-        }
+    if ((q1 === "mcdonalds" || q1 === "mcd") &&
+        (q2 === "vitamin c" || q2 === "vit c") &&
+        (q3 === "一二") &&
+        (q4 === "童话")) {
+        
+        document.getElementById("content").style.display = "block"; // 显示内容
+        changeMusic();  // 切换音乐
+        loadDiary();  // 加载日记
+        createGIFs();  // 重新调用 createGIFs() 生成新 GIF
+
+    } else {
+        alert("答案不对哦，试试再想想？");
+    }
+}
 
         function changeMusic() {
             let bgMusic = document.getElementById("bgMusic");
