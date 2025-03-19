@@ -24,10 +24,11 @@ user-select: none;
     -ms-user-select: none;
         }
 
-        #content { 
-            display: none; 
-            padding: 20px;
-        }
+        #content {
+    display: none;
+    opacity: 0;
+    transition: opacity 2.0s ease-in-out; /* 渐变时间 2.0 秒 */
+}
 
         iframe, audio { display: none; }
 
@@ -151,25 +152,31 @@ document.addEventListener("keydown", function (e) {
         });
 
         function checkAnswers() {
-        let q1 = document.getElementById("q1").value.toLowerCase();
-        let q2 = document.getElementById("q2").value.toLowerCase();
-        let q3 = document.getElementById("q3").value.toLowerCase();
-        let q4 = document.getElementById("q4").value.toLowerCase();
-        let q5 = document.getElementById("q5").value.toLowerCase();
+    let q1 = document.getElementById("q1").value.toLowerCase();
+    let q2 = document.getElementById("q2").value.toLowerCase();
+    let q3 = document.getElementById("q3").value.toLowerCase();
+    let q4 = document.getElementById("q4").value.toLowerCase();
+    let q5 = document.getElementById("q5").value.toLowerCase();
 
-        if ((q1 === "椅子" || q1 === "chair") &&
-            (q2 === "如果可以") &&
-            (q3 === "mcd" || q3 === "mcdonalds") &&
-            (q4 === "vitamin c" || q4 === "vit c") &&
-            (q5 === "老师" || q5 === "小学老师")) {
-            document.getElementById("content").style.display = "block";
-            changeMusic();
-            loadDiary();
-            createFallingGifs(); // 只有答对后才调用 GIF 落下效果
-        } else {
-            alert("答案不对哦，试试再想想？");
-        }
+    if ((q1.includes("椅子") || q1.includes("chair")) &&
+        (q2.includes("如果可以")) &&
+        (q3.includes("mcd")) &&
+        (q4.includes("vitamin c") || q4.includes("vit c")) &&
+        (q5.includes("老师"))) {
+        
+        let content = document.getElementById("content");
+        content.style.display = "block";  // 先显示
+        setTimeout(() => { 
+            content.style.opacity = "1";  // 然后淡入
+        }, 50); 
+
+        changeMusic();
+        loadDiary();
+        createFallingGifs();
+    } else {
+        alert("答案不对哦，试试再想想？");
     }
+}
 
         function changeMusic() {
             let bgMusic = document.getElementById("bgMusic");
