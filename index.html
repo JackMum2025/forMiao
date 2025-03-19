@@ -18,6 +18,10 @@
             background-color: #f4f4f4;
             overflow-y: auto; /* ✅ 允许滚动 */
             height: 100vh;
+user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
         }
 
         #content { 
@@ -110,6 +114,29 @@
     </audio>
 
     <script>
+        document.addEventListener('copy', (e) => { e.preventDefault(); alert('禁止复制！'); });
+document.addEventListener('cut', (e) => { e.preventDefault(); alert('禁止剪切！'); });
+document.addEventListener('paste', (e) => { e.preventDefault(); alert('禁止粘贴！'); });
+document.addEventListener('contextmenu', (e) => { e.preventDefault(); alert('禁止右键菜单！'); });
+
+document.addEventListener("visibilitychange", function () {
+    document.body.style.opacity = document.hidden ? "0" : "1";
+});
+
+document.addEventListener("fullscreenchange", function () {
+    if (!document.fullscreenElement) {
+        document.body.style.opacity = "0";
+        setTimeout(() => { document.body.style.opacity = "1"; }, 1000);
+    }
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "PrintScreen") {
+        document.body.style.opacity = "0";
+        setTimeout(() => { document.body.style.opacity = "1"; }, 1000);
+        alert("禁止截图！");
+    }
+});
         document.addEventListener("DOMContentLoaded", function() {
             let bgMusic = document.getElementById("bgMusic");
 
