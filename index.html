@@ -60,15 +60,17 @@ user-select: none;
             border-radius: 5px;
         }
 
-        .gif-container img {
-            position: absolute;
-            width: 100px;
-            animation: fall linear infinite;
-        }
+        .falling-gif {
+    position: absolute;
+    top: -100px; /* 从屏幕上方开始 */
+    width: 80px; /* 适当限制 GIF 尺寸 */
+    transition: opacity 0.5s ease-in-out;
+    animation: fall linear infinite;
+}
 
         @keyframes fall {
-            from { transform: translateY(-100px); opacity: 1; }
-            to { transform: translateY(100vh); opacity: 0; }
+            from { transform: translateY(-100px); }
+            to { transform: translateY(100vh); }
         }
     </style>
 </head>
@@ -229,19 +231,35 @@ document.addEventListener("keydown", function (e) {
                 "https://p6.itc.cn/images01/20230509/8dafd3f0f2b54989a0cf182e28fe65ca.gif"
             ];
            const container = document.querySelector(".gif-container");
-        setInterval(() => {
-            const img = document.createElement("img");
-            img.src = gifUrls[Math.floor(Math.random() * gifUrls.length)];
-            img.style.left = Math.random() * 100 + "vw";
-            img.style.animationDuration = Math.random() * 3 + 2 + "s";
-img.style.opacity = 0;
-setTimeout(() => img.style.opacity = 1, 100); 
-            container.appendChild(img);
-            setTimeout(() => img.remove(), 5000);
+    let maxGifs = 20; // 限制页面上的最大 GIF 数量
+    let currentGifs = 0;
 
-        }, 500);
-        }
-        createFallingGifs();
+    function createGif() {
+        if (currentGifs >= maxGifs) return; // 限制 GIF 数量，避免页面卡顿
+        
+        const img = document.createElement("img");
+        img.src = gifUrls[Math.floor(Math.random() * gifUrls.length)];
+        img.style.left = Math.random() * 100 + "vw";
+        img.style.animationDuration = Math.random() * 3 + 2 + "s";
+        img.style.opacity = 0;
+        img.classList.add("falling-gif");
+
+        img.onload = () => {
+            img.style.opacity = 1; // 确保图片加载完成后才显示
+            container.appendChild(img);
+            currentGifs++;
+
+            setTimeout(() => {
+                img.remove();
+                currentGifs--;
+            }, 5000);
+        };
+    }
+
+    setInterval(createGif, 800); // 适当延长时间间隔，减少资源消耗
+}
+
+createFallingGifs();
     </script>
 </body>
 </html>
