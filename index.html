@@ -59,7 +59,15 @@ user-select: none;
             padding: 10px;
             border-radius: 5px;
         }
-
+.gif-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none; /* 避免 GIF 影响页面点击 */
+    overflow: hidden; /* 防止 GIF 滑出去后出现滚动条 */
+}
         .falling-gif {
     position: absolute;
     top: -100px; /* 从屏幕上方开始 */
@@ -69,7 +77,7 @@ user-select: none;
 }
 
         @keyframes fall {
-            from { transform: translateY(-100px); }
+            from { transform: translateY(0); }
             to { transform: translateY(100vh); }
         }
     </style>
@@ -240,7 +248,7 @@ document.addEventListener("keydown", function (e) {
         const img = document.createElement("img");
         img.src = gifUrls[Math.floor(Math.random() * gifUrls.length)];
         img.style.left = Math.random() * 100 + "vw";
-        img.style.animationDuration = Math.random() * 3 + 2 + "s";
+        img.style.animationDuration = Math.random() * 5 + 3 + "s";
         img.style.opacity = 0;
         img.classList.add("falling-gif");
 
@@ -252,7 +260,7 @@ document.addEventListener("keydown", function (e) {
             setTimeout(() => {
                 img.remove();
                 currentGifs--;
-            }, 5000);
+            }, 8000);
         };
     }
 
