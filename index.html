@@ -162,15 +162,12 @@ user-select: none;
     
     function loadComments() {
         const commentList = document.getElementById("comment-list");
-        db.ref("comments").orderByChild("timestamp").on("value", snapshot => {
-            commentList.innerHTML = "";
-            snapshot.forEach(childSnapshot => {
-                const comment = childSnapshot.val().text;
-                const li = document.createElement("li");
-                li.textContent = comment;
-                commentList.appendChild(li);
-            });
-        });
+        db.ref("comments").orderByChild("timestamp").on("child_added", snapshot => {
+    const comment = snapshot.val().text;
+    const li = document.createElement("li");
+    li.textContent = comment;
+    document.getElementById("comment-list").appendChild(li);
+});
     }
     
     document.addEventListener("DOMContentLoaded", loadComments);
