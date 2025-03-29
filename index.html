@@ -37,9 +37,9 @@ user-select: none;
   font-family: "Helvetica", sans-serif;
 }
 /* 调整输入框样式 */
-.cusdis-textarea {
-  background: #f5f5f5;
-  border-radius: 8px;
+#cusdis_thread textarea {
+  background: #f5f5f5 !important;
+  border-radius: 8px !important;
 }
         iframe, audio { display: none; }
 
@@ -132,17 +132,25 @@ user-select: none;
   };
 </script>
 <h2>💬 留言板</h2>
-    <div id="cusdis_thread"
-  data-host="https://cusdis.com"
-  data-app-id="0b639b63-a1a0-494e-bbc2-77fcfc12b982"
-  data-page-id="{{ miao-secret-page }}"
-  data-page-url="{{ https://jackmum2025.github.io/forMiao }}"
-  data-page-title="{{ 给一二的留言板 }}"
-></div>
-<script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+    <div id="cusdis_thread"></div>
 
-        
-</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    window.CUSDIS = {
+      host: "https://cusdis.com",
+      appId: "0b639b63-a1a0-494e-bbc2-77fcfc12b982",
+      pageId: "miao-secret-page",
+      pageUrl: "https://jackmum2025.github.io/forMiao",
+      pageTitle: "给一二的留言板"
+    };
+
+    const script = document.createElement("script");
+    script.src = "https://cusdis.com/js/cusdis.es.js";
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+  });
+</script>
     <!-- GIF 飘落效果 -->
     <div class="gif-container"></div>
 
