@@ -133,11 +133,12 @@ user-select: none;
     <div id="cusdis_thread"
         data-host="https://cusdis.com"
         data-app-id="0b639b63-a1a0-494e-bbc2-77fcfc12b982"  <!-- 替换成你的 App ID -->
-        data-page-id="secret-page"  <!-- 自定义唯一ID（如页面URL） -->
+        data-page-id="%= window.location.pathname %"  <!-- 自定义唯一ID（如页面URL） -->
         data-page-url="https://jackmum2025.github.io/forMiao/"
-        data-page-title="秘密留言">
+        data-page-title="%= document.title %">
     </div>
     <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+        
 </div>
     <!-- GIF 飘落效果 -->
     <div class="gif-container"></div>
