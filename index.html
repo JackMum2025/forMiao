@@ -29,7 +29,9 @@ user-select: none;
     opacity: 0;
     transition: opacity 4s ease-in-out; /* 渐变时间 4 秒 */
 }
-#cusdis_thread {
+        #cusdis_thread { 
+  display: block !important; 
+  opacity: 1 !important;
   max-width: 800px;
   margin: 0 auto;
   font-family: "Helvetica", sans-serif;
@@ -125,17 +127,17 @@ user-select: none;
         <pre id="diary-content">加载中...</pre>
    <script>
   window.CUSDIS_OPTIONS = {
-    hideNicknameInput: true,  // 隐藏昵称输入框
-    defaultNickname: '匿名网友'  // 默认昵称
+    hideNicknameInput: true,
+    defaultNickname: '匿名网友'
   };
 </script>
 <h2>💬 留言板</h2>
     <div id="cusdis_thread"
         data-host="https://cusdis.com"
         data-app-id="0b639b63-a1a0-494e-bbc2-77fcfc12b982"  <!-- 替换成你的 App ID -->
-        data-page-id="%= window.location.pathname %"  <!-- 自定义唯一ID（如页面URL） -->
+        data-page-id="My-Guestbook"  <!-- 自定义唯一ID（如页面URL） -->
         data-page-url="https://jackmum2025.github.io/forMiao/"
-        data-page-title="%= document.title %">
+        data-page-title="给一二的秘密留言">
     </div>
     <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
         
