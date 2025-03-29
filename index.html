@@ -121,7 +121,7 @@ user-select: none;
 
     <!-- 背景音乐 -->
     <audio id="bgMusic" loop>
-        <source id="musicSource" src="https://jackmum2025.github.io/forMiao/Front.mp3" type="audio/mpeg">
+        <source id="musicSource" src="https://jackmum2025.github.io/forMiao/gagaga.mp3" type="audio/mpeg">
     </audio>
 
     <script>
@@ -189,7 +189,7 @@ document.addEventListener("keydown", function (e) {
         function changeMusic() {
             let bgMusic = document.getElementById("bgMusic");
             let musicSource = document.getElementById("musicSource");
-            musicSource.src = "https://jackmum2025.github.io/forMM/Sparkle%20-%20movie%20ver%20(mp3cut.net)%20(4).mp3";
+            musicSource.src = "https://jackmum2025.github.io/forMM/always.mp3";
             bgMusic.load();
             bgMusic.play().catch(error => console.log("切换音乐失败", error));
         }
