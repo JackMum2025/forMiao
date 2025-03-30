@@ -125,32 +125,32 @@ user-select: none;
 
         <h2>📖 说说</h2>
         <pre id="diary-content">加载中...</pre>
-   <script>
+   <h2>💬 留言板</h2>
+
+<!-- Cusdis 留言区 -->
+<div id="cusdis_thread"
+    data-host="https://cusdis.com"
+    data-app-id="0b639b63-a1a0-494e-bbc2-77fcfc12b982"
+    data-page-id="miao-secret-page"
+    data-page-url="https://jackmum2025.github.io/forMiao"
+    data-page-title="给一二的留言板">
+</div>
+
+<!-- 配置 Cusdis -->
+<script>
   window.CUSDIS_OPTIONS = {
-    hideNicknameInput: true,
-    defaultNickname: '匿名网友'
+    hideNicknameInput: true,  // 隐藏昵称输入框
+    defaultNickname: "匿名网友" // 默认昵称
+  };
+
+  window.CUSDIS_CONFIG = {
+    host: "https://cusdis.com",
+    appId: "0b639b63-a1a0-494e-bbc2-77fcfc12b982"
   };
 </script>
-<h2>💬 留言板</h2>
-    <div id="cusdis_thread"></div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    window.CUSDIS = {
-      host: "https://cusdis.com",
-      appId: "0b639b63-a1a0-494e-bbc2-77fcfc12b982",
-      pageId: "miao-secret-page",
-      pageUrl: "https://jackmum2025.github.io/forMiao",
-      pageTitle: "给一二的留言板"
-    };
-
-    const script = document.createElement("script");
-    script.src = "https://cusdis.com/js/cusdis.es.js";
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-  });
-</script>
+<!-- 加载 Cusdis 脚本 -->
+<script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
     <!-- GIF 飘落效果 -->
     <div class="gif-container"></div>
 
