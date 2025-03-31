@@ -29,18 +29,7 @@ user-select: none;
     opacity: 0;
     transition: opacity 4s ease-in-out; /* 渐变时间 4 秒 */
 }
-        #cusdis_thread { 
-    display: none !important; 
-    opacity: 1 !important;
-    max-width: 800px;
-    margin: 0 auto;
-    font-family: "Helvetica", sans-serif;
-}
-/* 调整输入框样式 */
-#cusdis_thread textarea {
-  background: #f5f5f5 !important;
-  border-radius: 8px !important;
-}
+
         iframe, audio { display: none; }
 
         .container {
@@ -125,41 +114,8 @@ user-select: none;
 
         <h2>📖 说说</h2>
         <pre id="diary-content">加载中...</pre>
-   <h2>💬 留言板</h2>
+    </div>
 
-<!-- Cusdis 留言区 -->
-<div id="cusdis_thread"
-    data-host="https://cusdis.com"
-    data-app-id="0b639b63-a1a0-494e-bbc2-77fcfc12b982"
-    data-page-id="miao-secret-page"
-    data-page-url="https://jackmum2025.github.io/forMiao"
-    data-page-title="给一二的留言板">
-</div>
-
-<!-- 配置 Cusdis -->
-<script>
-  window.CUSDIS_OPTIONS = {
-    hideNicknameInput: true,  // 隐藏昵称输入框
-    defaultNickname: "匿名网友" // 默认昵称
-  };
-
-  window.CUSDIS_CONFIG = {
-    host: "https://cusdis.com",
-    appId: "0b639b63-a1a0-494e-bbc2-77fcfc12b982"
-  };
-</script>
-
-<!-- 加载 Cusdis 脚本 -->
-<script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
-        <script>
-  window.addEventListener('load', function() {
-      if (window.CUSDIS) {
-          console.log('Cusdis loaded successfully');
-      } else {
-          console.error('Cusdis failed to load');
-      }
-  });
-</script>
     <!-- GIF 飘落效果 -->
     <div class="gif-container"></div>
 
@@ -217,7 +173,8 @@ document.addEventListener("keydown", function (e) {
             (q3 === "mcd" || q3 === "mcdonalds") &&
             (q4 === "vitamin c" || q4 === "vit c") &&
             (q5 === "老师" || q5 === "小学老师")) {
-            let content = document.getElementById("cusdis_thread").style.display = "block";  // 先显示
+            let content = document.getElementById("content");
+        content.style.display = "block";  // 先显示
         setTimeout(() => { 
             content.style.opacity = "1";  // 然后淡入
         }, 50); 
@@ -310,6 +267,7 @@ document.addEventListener("keydown", function (e) {
     setInterval(createGif, 800); // 适当延长时间间隔，减少资源消耗
 }
 
+createFallingGifs();
     </script>
 </body>
 </html>
