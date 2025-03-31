@@ -30,11 +30,11 @@ user-select: none;
     transition: opacity 4s ease-in-out; /* 渐变时间 4 秒 */
 }
         #cusdis_thread { 
-  display: block !important; 
-  opacity: 1 !important;
-  max-width: 800px;
-  margin: 0 auto;
-  font-family: "Helvetica", sans-serif;
+    display: none !important; 
+    opacity: 1 !important;
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: "Helvetica", sans-serif;
 }
 /* 调整输入框样式 */
 #cusdis_thread textarea {
@@ -151,6 +151,15 @@ user-select: none;
 
 <!-- 加载 Cusdis 脚本 -->
 <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+        <script>
+  window.addEventListener('load', function() {
+      if (window.CUSDIS) {
+          console.log('Cusdis loaded successfully');
+      } else {
+          console.error('Cusdis failed to load');
+      }
+  });
+</script>
     <!-- GIF 飘落效果 -->
     <div class="gif-container"></div>
 
@@ -208,8 +217,7 @@ document.addEventListener("keydown", function (e) {
             (q3 === "mcd" || q3 === "mcdonalds") &&
             (q4 === "vitamin c" || q4 === "vit c") &&
             (q5 === "老师" || q5 === "小学老师")) {
-            let content = document.getElementById("content");
-        content.style.display = "block";  // 先显示
+            let content = document.getElementById("cusdis_thread").style.display = "block";  // 先显示
         setTimeout(() => { 
             content.style.opacity = "1";  // 然后淡入
         }, 50); 
@@ -302,7 +310,6 @@ document.addEventListener("keydown", function (e) {
     setInterval(createGif, 800); // 适当延长时间间隔，减少资源消耗
 }
 
-createFallingGifs();
     </script>
 </body>
 </html>
