@@ -114,6 +114,13 @@ user-select: none;
 
         <h2>📖 说说</h2>
         <pre id="diary-content">加载中...</pre>
+          <h2>留言板</h2>
+    <input id="name" type="text" placeholder="你的名字"><br><br>
+    <textarea id="message" placeholder="写下你的留言"></textarea><br><br>
+    <button onclick="submitMessage()">提交留言</button>
+
+    <h3>留言列表</h3>
+    <div id="messages"></div>
     </div>
 
     <!-- GIF 飘落效果 -->
@@ -268,6 +275,34 @@ document.addEventListener("keydown", function (e) {
 }
 
 createFallingGifs();
+        <script>
+        const apiUrl = "https://script.google.com/macros/s/AKfycbxJSVYUd_mBjptwIUyug6Q2c5tMJwApZ4qI2RM0mW-sAInTvhvumJpU5emE57ScW1_2cw/exec"; // 替换成你的 Google Apps Script API 地址
+
+        async function submitMessage() {
+            const name = document.getElementById("name").value;
+            const message = document.getElementById("message").value;
+            if (!name || !message) { alert("请输入名字和留言！"); return; }
+
+            await fetch(apiUrl, {
+                method: "POST",
+                body: JSON.stringify({ name, message }),
+                headers: { "Content-Type": "application/json" }
+            });
+
+            document.getElementById("name").value = "";
+            document.getElementById("message").value = "";
+            loadMessages();
+        }
+
+        async function loadMessages() {
+            const response = await fetch(apiUrl);
+            const messages = await response.json();
+            document.getElementById("messages").innerHTML = messages.reverse().map(msg =>
+                <div class="message"><b>${msg.name}:</b> ${msg.message} <small>${new Date(msg.timestamp).toLocaleString()}</small></div>
+            ).join("");
+        }
+
+        loadMessages();
     </script>
 </body>
 </html>
