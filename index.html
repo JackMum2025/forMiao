@@ -193,15 +193,14 @@
                 (q4 === "vitamin c" || q4 === "vit c") &&
                 (q5 === "老师" || q5 === "小学老师")) {
                 let content = document.getElementById("content");
-                content.style.display = "block";
-                setTimeout(() => { 
-                    content.style.opacity = "1";
-                    // 显示留言板和表单
-                    document.getElementById("form").style.display = "block";
-                    document.getElementById("messages").style.display = "block";
-                    // 加载留言
-                    loadMessages();
-                }, 50); 
+        content.style.display = "block";
+        setTimeout(() => { 
+            content.style.opacity = "1";
+            document.getElementById("form").style.display = "block";
+            document.getElementById("messages").style.display = "block";
+            // 只在第一次加载时获取留言
+            loadMessages();
+        }, 50); 
                 changeMusic();
                 loadDiary();
                 createFallingGifs();
@@ -211,30 +210,29 @@
         }
 
         document.getElementById('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const comment = document.getElementById("comment").value;
-            if (!comment.trim()) {
-                alert("留言内容不能为空！");
-                return;
-            }
-            
-            fetch(scriptURL, {
-                method: 'POST',
-                body: new URLSearchParams({ 'comment': comment })
-            }).then(() => {
-                alert("留言成功！");
-                document.getElementById("comment").value = "";
-                // 提交后立即显示新留言
-                const ul = document.getElementById("message-list");
-                const li = document.createElement("li");
-                li.textContent = comment;
-                ul.insertBefore(li, ul.firstChild);
-            }).catch(error => {
-                alert("留言失败，请稍后再试");
-                console.error('Error:', error);
-            });
-        });
-
+    e.preventDefault();
+    const comment = document.getElementById("comment").value;
+    if (!comment.trim()) {
+        alert("留言内容不能为空！");
+        return;
+    }
+    
+    fetch(scriptURL, {
+        method: 'POST',
+        body: new URLSearchParams({ 'comment': comment })
+    }).then(() => {
+        alert("留言成功！");
+        document.getElementById("comment").value = "";
+        // 只添加新留言到列表顶部，不再调用 loadMessages()
+        const ul = document.getElementById("message-list");
+        const li = document.createElement("li");
+        li.textContent = comment;
+        ul.insertBefore(li, ul.firstChild);
+    }).catch(error => {
+        alert("留言失败，请稍后再试");
+        console.error('Error:', error);
+    });
+});
         function loadMessages() {
             fetch("https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw")
                 .then(res => res.json())
