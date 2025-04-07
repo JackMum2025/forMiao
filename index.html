@@ -114,7 +114,6 @@ user-select: none;
 
         <h2>📖 说说</h2>
         <pre id="diary-content">加载中...</pre>
-    </div>
     
 <form id="form">
   <textarea id="comment" placeholder="请输入留言"></textarea><br>
@@ -125,6 +124,7 @@ user-select: none;
   <h3>留言板</h3>
   <ul id="message-list"></ul>
 </div>
+         </div>
     
     <!-- GIF 飘落效果 -->
     <div class="gif-container"></div>
@@ -151,17 +151,22 @@ document.getElementById('form').addEventListener('submit', e => {
 });
 
 function loadMessages() {
-  fetch("https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw") // 替换 YOUR_SHEET_ID
-    .then(res => res.json())
-    .then(data => {
-      const ul = document.getElementById("message-list");
-      ul.innerHTML = "";
-      data.reverse().forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item["留言"];
-        ul.appendChild(li);
-      });
-    });
+    fetch("https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw")
+        .then(res => res.json())
+        .then(data => {
+            const ul = document.getElementById("message-list");
+            ul.innerHTML = "";
+            data.reverse().forEach(item => {
+                if (item["留言"]) { // 确保留言字段存在
+                    const li = document.createElement("li");
+                    li.textContent = item["留言"];
+                    ul.appendChild(li);
+                }
+            });
+        })
+        .catch(error => {
+            console.error("加载留言失败:", error);
+        });
 }
 
 loadMessages();
@@ -226,7 +231,30 @@ document.addEventListener("keydown", function (e) {
             alert("答案不对哦，试试再想想？");
         }
     }
-
+document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    const comment = document.getElementById("comment").value;
+    if (!comment.trim()) {
+        alert("留言内容不能为空！");
+        return;
+    }
+    
+    fetch(scriptURL, {
+        method: 'POST',
+        body: new URLSearchParams({ 'comment': comment })
+    }).then(() => {
+        alert("留言成功！");
+        document.getElementById("comment").value = "";
+        // 提交后立即显示新留言
+        const ul = document.getElementById("message-list");
+        const li = document.createElement("li");
+        li.textContent = comment;
+        ul.insertBefore(li, ul.firstChild); // 新留言显示在最上面
+    }).catch(error => {
+        alert("留言失败，请稍后再试");
+        console.error('Error:', error);
+    });
+});
         function changeMusic() {
             let bgMusic = document.getElementById("bgMusic");
             let musicSource = document.getElementById("musicSource");
