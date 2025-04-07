@@ -115,7 +115,17 @@ user-select: none;
         <h2>📖 说说</h2>
         <pre id="diary-content">加载中...</pre>
     </div>
+    
+<form id="form">
+  <textarea id="comment" placeholder="请输入留言"></textarea><br>
+  <button type="submit">留言</button>
+</form>
 
+<div id="messages">
+  <h3>留言板</h3>
+  <ul id="message-list"></ul>
+</div>
+    
     <!-- GIF 飘落效果 -->
     <div class="gif-container"></div>
 
@@ -125,6 +135,37 @@ user-select: none;
     </audio>
 
     <script>
+        const scriptURL = "https://script.google.com/macros/s/AKfycbyXc0dwGpgLtSRmeRLWHEZk9eca-L1UBqp0ckv7P1iTpO9hAO6iZmVTsPcw-YHosvnt/exec"; // 替换成你自己的 URL
+
+document.getElementById('form').addEventListener('submit', e => {
+  e.preventDefault();
+  const comment = document.getElementById("comment").value;
+  fetch(scriptURL, {
+    method: 'POST',
+    body: new URLSearchParams({ 'comment': comment })
+  }).then(() => {
+    alert("留言成功！");
+    document.getElementById("comment").value = "";
+    loadMessages();
+  });
+});
+
+function loadMessages() {
+  fetch("https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw") // 替换 YOUR_SHEET_ID
+    .then(res => res.json())
+    .then(data => {
+      const ul = document.getElementById("message-list");
+      ul.innerHTML = "";
+      data.reverse().forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item["留言"];
+        ul.appendChild(li);
+      });
+    });
+}
+
+loadMessages();
+        
         document.addEventListener('copy', (e) => { e.preventDefault(); alert('禁止复制！'); });
 document.addEventListener('cut', (e) => { e.preventDefault(); alert('禁止剪切！'); });
 document.addEventListener('paste', (e) => { e.preventDefault(); alert('禁止粘贴！'); });
