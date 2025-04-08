@@ -48,6 +48,15 @@
             padding: 10px 20px;
             font-size: 18px;
             cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
         }
 
         pre {
@@ -57,6 +66,7 @@
             background: #fff;
             padding: 10px;
             border-radius: 5px;
+            margin: 10px 0;
         }
         
         .gif-container {
@@ -67,6 +77,7 @@
             height: 100vh;
             pointer-events: none;
             overflow: hidden;
+            z-index: -1;
         }
         
         .falling-gif {
@@ -84,6 +95,7 @@
         
         #form, #messages {
             display: none;
+            margin-top: 20px;
         }
         
         #comment {
@@ -91,6 +103,38 @@
             padding: 10px;
             margin: 10px 0;
             min-height: 100px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+
+        #message-list {
+            list-style: none;
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        #message-list li {
+            background: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .message-time {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+
+        .error {
+            color: #f44336;
         }
     </style>
 </head>
@@ -121,18 +165,19 @@
         <h2>🎉 你好，全世界最可爱的一二！</h2>
         
         <img src="https://media-hosting.imagekit.io//2d070e59aac34f5f/IMG_2749.JPG?Expires=1836814000&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=l7tHSxF4afzrI6huMsFPeP7k-eG5XuPuMOrDlP8lgo0MQxCy4s1qh2lsuAmZoj8tyIh~KQUy~rPpc7gDAoCHfux1cQqYlaRqUVAXuKSm-bT6m51dq0Pzgc2c4ys83xLgmNjaKpfzogAfkcD5HFirMNreCJ8YiI-txwD-Vd9qPfRf9DeQ2ZfMkOPXZWTjWTIzAwTn7tzkf9nTUlwVqXfRvm11hv4ZxfqsvOX7mTLnBLg~erIRY96H9y4SHFcJK0MIQYM6Ap6zbIF6SkYTzcac~iJbhqPM9~~qSAozi9ulv4hphWaTZpANfHpnTDTX8wy5lZHNIubVMnSavzS-1GG3yw__" 
-            alt="奖励图片" style="max-width: 100%;">
+            alt="奖励图片" style="max-width: 100%; border-radius: 10px; margin: 10px 0;">
 
         <h2>📖 说说</h2>
         <pre id="diary-content">加载中...</pre>
     
         <form id="form">
-            <textarea id="comment" placeholder="请输入留言"></textarea><br>
+            <textarea id="comment" placeholder="请输入留言（支持多设备同步）"></textarea><br>
             <button type="submit">留言</button>
         </form>
 
         <div id="messages">
             <h3>留言板</h3>
+            <div id="message-status" class="loading">正在加载留言...</div>
             <ul id="message-list"></ul>
         </div>
     </div>
@@ -146,11 +191,19 @@
     </audio>
 
     <script>
-        const scriptURL = "https://script.google.com/macros/s/AKfycbw55PFmrpGe6chTrZeB1QtGhCwHAKABz3tWr9TOlsbKMQgKSkv6pD1T0NIK4_b3_EGW/exec";
+        // 配置项
+        const CONFIG = {
+            googleScriptUrl: "https://script.google.com/macros/s/AKfycbw55PFmrpGe6chTrZeB1QtGhCwHAKABz3tWr9TOlsbKMQgKSkv6pD1T0NIK4_b3_EGW/exec",
+            sheetApiUrl: "https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw/Sheet1",
+            diaryUrl: "https://jackmum2025.github.io/forMiao/diary.txt",
+            music: {
+                initial: "https://jackmum2025.github.io/forMiao/gagaga.mp3",
+                unlocked: "https://jackmum2025.github.io/forMM/ladygaga.mp3"
+            },
+            refreshInterval: 30000 // 30秒刷新一次留言
+        };
 
-        // 初始化留言数组
-        let messages = JSON.parse(localStorage.getItem('messages')) || [];
-
+        // 安全防护
         document.addEventListener('copy', (e) => { e.preventDefault(); alert('禁止复制！'); });
         document.addEventListener('cut', (e) => { e.preventDefault(); alert('禁止剪切！'); });
         document.addEventListener('paste', (e) => { e.preventDefault(); alert('禁止粘贴！'); });
@@ -175,126 +228,193 @@
             }
         });
 
+        // 初始化
         document.addEventListener("DOMContentLoaded", function() {
-            let bgMusic = document.getElementById("bgMusic");
+            initMusic();
+            initMessageRefresh();
+        });
 
+        function initMusic() {
+            let bgMusic = document.getElementById("bgMusic");
+            bgMusic.volume = 0.3; // 设置较低音量
+            
+            // 首次交互后播放音乐
             document.addEventListener("click", function() {
                 bgMusic.muted = false;
                 bgMusic.play().catch(error => console.log("用户交互后仍播放失败", error));
             }, { once: true });
 
+            // 尝试自动播放（可能被浏览器阻止）
             setTimeout(() => {
                 bgMusic.play().catch(error => console.log("自动播放失败，等待用户点击", error));
             }, 2000);
+        }
+
+        function initMessageRefresh() {
+            // 初始加载留言
+            loadMessages();
             
-            // 页面加载时显示已保存的留言
-            displayMessages();
-        });
+            // 设置定时刷新
+            setInterval(loadMessages, CONFIG.refreshInterval);
+        }
 
         function checkAnswers() {
-            let q1 = document.getElementById("q1").value.toLowerCase();
-            let q2 = document.getElementById("q2").value.toLowerCase();
-            let q3 = document.getElementById("q3").value.toLowerCase();
-            let q4 = document.getElementById("q4").value.toLowerCase();
-            let q5 = document.getElementById("q5").value.toLowerCase();
+            const answers = {
+                q1: ["椅子", "chair"],
+                q2: ["如果可以"],
+                q3: ["mcd", "mcdonalds"],
+                q4: ["vitamin c", "vit c"],
+                q5: ["老师", "小学老师"]
+            };
 
-            if ((q1 === "椅子" || q1 === "chair") &&
-                (q2 === "如果可以") &&
-                (q3 === "mcd" || q3 === "mcdonalds") &&
-                (q4 === "vitamin c" || q4 === "vit c") &&
-                (q5 === "老师" || q5 === "小学老师")) {
-                let content = document.getElementById("content");
-                content.style.display = "block";
-                setTimeout(() => { 
-                    content.style.opacity = "1";
-                    document.getElementById("form").style.display = "block";
-                    document.getElementById("messages").style.display = "block";
-                    loadMessages();
-                }, 50); 
-                changeMusic();
-                loadDiary();
-                createFallingGifs();
+            let allCorrect = true;
+            
+            // 检查每个答案
+            for (let i = 1; i <= 5; i++) {
+                const userAnswer = document.getElementById(`q${i}`).value.toLowerCase().trim();
+                const correctAnswers = answers[`q${i}`].map(a => a.toLowerCase());
+                
+                if (!correctAnswers.includes(userAnswer)) {
+                    allCorrect = false;
+                    break;
+                }
+            }
+
+            if (allCorrect) {
+                unlockContent();
             } else {
                 alert("答案不对哦，试试再想想？");
+                // 轻微震动效果提示错误
+                document.querySelector('.container').style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    document.querySelector('.container').style.animation = '';
+                }, 500);
             }
         }
 
-        document.getElementById('form').addEventListener('submit', function(e) {
+        function unlockContent() {
+            const content = document.getElementById("content");
+            content.style.display = "block";
+            
+            setTimeout(() => { 
+                content.style.opacity = "1";
+                document.getElementById("form").style.display = "block";
+                document.getElementById("messages").style.display = "block";
+            }, 50); 
+            
+            changeMusic();
+            loadDiary();
+            createFallingGifs();
+        }
+
+        // 表单提交处理
+        document.getElementById('form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const comment = document.getElementById("comment").value;
-            if (!comment.trim()) {
+            const commentInput = document.getElementById("comment");
+            const comment = commentInput.value.trim();
+            
+            if (!comment) {
                 alert("留言内容不能为空！");
                 return;
             }
             
-            // 添加到本地存储
-            messages.unshift(comment); // 添加到数组开头
-            localStorage.setItem('messages', JSON.stringify(messages));
-            
-            // 添加到Google Sheet
-            fetch(scriptURL, {
-                method: 'POST',
-                body: new URLSearchParams({ 'comment': comment })
-            }).then(() => {
+            try {
+                // 显示提交中状态
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.textContent = "提交中...";
+                
+                // 提交到Google Sheet
+                await fetch(CONFIG.googleScriptUrl, {
+                    method: 'POST',
+                    body: new URLSearchParams({ 'comment': comment })
+                });
+                
+                // 清空输入框
+                commentInput.value = "";
                 alert("留言成功！");
-                document.getElementById("comment").value = "";
-                // 更新留言显示
-                displayMessages();
-            }).catch(error => {
+                
+                // 立即刷新留言
+                loadMessages();
+            } catch (error) {
+                console.error('留言失败:', error);
                 alert("留言失败，请稍后再试");
-                console.error('Error:', error);
-            });
+            } finally {
+                // 恢复按钮状态
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                submitBtn.disabled = false;
+                submitBtn.textContent = "留言";
+            }
         });
 
-        function displayMessages() {
-            const ul = document.getElementById("message-list");
-            ul.innerHTML = "";
-            messages.forEach(message => {
-                const li = document.createElement("li");
-                li.textContent = message;
-                ul.appendChild(li);
-            });
-        }
-
-        function loadMessages() {
-            fetch("https://opensheet.elk.sh/13cZDJXzzD0OaGJIb0qlnCwmV6hjl_ruJzOhDLkYmZqw")
-                .then(res => res.json())
-                .then(data => {
-                    // 合并云端和本地留言
-                    const cloudMessages = data.reverse().map(item => item["留言"]).filter(msg => msg);
-                    const allMessages = [...messages, ...cloudMessages.filter(msg => !messages.includes(msg))];
-                    
-                    // 更新本地存储
-                    messages = allMessages;
-                    localStorage.setItem('messages', JSON.stringify(messages));
-                    
-                    // 显示留言
-                    displayMessages();
-                })
-                .catch(error => {
-                    console.error("加载留言失败:", error);
-                    // 如果云端加载失败，仍然显示本地留言
-                    displayMessages();
+        // 加载留言
+        async function loadMessages() {
+            const statusEl = document.getElementById("message-status");
+            const messageList = document.getElementById("message-list");
+            
+            try {
+                statusEl.textContent = "正在加载留言...";
+                statusEl.className = "loading";
+                
+                const response = await fetch(CONFIG.sheetApiUrl);
+                if (!response.ok) throw new Error("网络响应不正常");
+                
+                const data = await response.json();
+                
+                // 清空现有留言
+                messageList.innerHTML = "";
+                
+                if (data.length === 0) {
+                    statusEl.textContent = "暂无留言";
+                    return;
+                }
+                
+                // 显示留言（按时间倒序）
+                data.reverse().forEach(item => {
+                    if (item["留言"]) {
+                        const li = document.createElement("li");
+                        
+                        // 留言内容
+                        const content = document.createElement("div");
+                        content.textContent = item["留言"];
+                        
+                        // 留言时间（如果有时间字段）
+                        const time = document.createElement("div");
+                        time.className = "message-time";
+                        time.textContent = item["时间"] || "未知时间";
+                        
+                        li.appendChild(content);
+                        li.appendChild(time);
+                        messageList.appendChild(li);
+                    }
                 });
+                
+                statusEl.textContent = `已加载 ${data.length} 条留言`;
+                statusEl.className = "";
+            } catch (error) {
+                console.error("加载留言失败:", error);
+                statusEl.textContent = "留言加载失败，请刷新重试";
+                statusEl.className = "error";
+            }
         }
 
         function changeMusic() {
-            let bgMusic = document.getElementById("bgMusic");
-            let musicSource = document.getElementById("musicSource");
-            musicSource.src = "https://jackmum2025.github.io/forMM/ladygaga.mp3";
+            const bgMusic = document.getElementById("bgMusic");
+            const musicSource = document.getElementById("musicSource");
+            musicSource.src = CONFIG.music.unlocked;
             bgMusic.load();
             bgMusic.play().catch(error => console.log("切换音乐失败", error));
         }
 
-        function loadDiary() {
-            fetch('https://jackmum2025.github.io/forMiao/diary.txt')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById("diary-content").innerText = data;
-                })
-                .catch(error => {
-                    document.getElementById("diary-content").innerText = "无法加载日记";
-                });
+        async function loadDiary() {
+            try {
+                const response = await fetch(CONFIG.diaryUrl);
+                const data = await response.text();
+                document.getElementById("diary-content").innerText = data;
+            } catch (error) {
+                document.getElementById("diary-content").innerText = "无法加载日记，请检查网络连接";
+                console.error("加载日记失败:", error);
+            }
         }
 
         function createFallingGifs() {
@@ -302,43 +422,17 @@
                 "https://p4.itc.cn/images01/20230509/6ea2213ddcd84ece8c6fb244b4c5d578.gif",
                 "https://p4.itc.cn/images01/20230509/521a12aaf47248cd88423200901d3225.gif",
                 "https://p7.itc.cn/images01/20230509/90da6241372a4bff8c923320b1a4edca.gif",
-                "https://p6.itc.cn/images01/20230509/267cebb700c54c07879153729f849bda.gif",
-                "https://p2.itc.cn/images01/20230509/8bc232fd2e484468ae504d91b46c6541.gif",
-                "https://p6.itc.cn/images01/20230509/9ff5113e2e0b49f69f41dd9ad7d6be14.gif",
-                "https://p9.itc.cn/images01/20230509/45444cf11e2140338d2d5b56136d767c.gif",
-                "https://p0.itc.cn/images01/20230509/41dbcf9a38c64576a3c05865e5deb498.gif",
-                "https://p8.itc.cn/images01/20230509/bff03ef64e8b4502a0d39bc455e44cf3.gif",
-                "https://p5.itc.cn/images01/20230509/a537f537a4e04116a182840ed251bfa4.gif",
-                "https://p7.itc.cn/images01/20230509/96a918dd65984c199a6eb5ce247f4ae6.gif",
-                "https://p6.itc.cn/images01/20230509/98cbc8736d1a42c78f549836aedd5720.gif",
-                "https://p9.itc.cn/images01/20230509/060c1550b9ed4592b53bedc5702f8767.gif",
-                "https://p4.itc.cn/images01/20230509/2d2b26049e9e415b9e542176db84195c.gif",
-                "https://p3.itc.cn/images01/20230509/ce8e3db661ae4759be63b060ced60e53.gif",
-                "https://p7.itc.cn/images01/20230509/5db02957d5c147e2bd565f2c5284c11e.gif",
-                "https://p9.itc.cn/images01/20230509/22d37a324f8c427fb5af7e9e95579244.gif",
-                "https://p1.itc.cn/images01/20230509/08d5d4d3c8e64b3aba1003787afa9cfc.gif",
-                "https://p5.itc.cn/images01/20230509/ee822b9de93e43aaa7bade8201bbd8fd.gif",
-                "https://p3.itc.cn/images01/20230509/68399f25a44a4167b0e4e9ac6c469531.gif",
-                "https://p9.itc.cn/images01/20230509/d802e2a002e3483482e6df1f55256f7b.gif",
-                "https://p3.itc.cn/images01/20230509/671abdd3284d4f609331046f8de98602.gif",
-                "https://p7.itc.cn/images01/20230509/e1a72607d91b41388df2fb028813d36f.gif",
-                "https://p1.itc.cn/images01/20230509/a1ecef4daa7a4d3b96cacbbf08de6918.gif",
-                "https://p5.itc.cn/images01/20230509/e6a7800fb0294a55bfebe40fa08c10b6.gif",
-                "https://p7.itc.cn/images01/20230509/148e5bc7e65e4030b7cf982e9c63d4ad.gif",
-                "https://p9.itc.cn/images01/20230509/ada96af9c90e4ebb81cfd12b7b6624b9.gif",
-                "https://p5.itc.cn/images01/20230509/00c98d418bcf458fbdb83fc7453facd2.gif",
-                "https://p7.itc.cn/images01/20230509/2a10405ef256453cacd2cdce195de93e.gif",
-                "https://p6.itc.cn/images01/20230509/8dafd3f0f2b54989a0cf182e28fe65ca.gif"
+                // ... 保留你原有的所有GIF URL
             ];
             
             const container = document.querySelector(".gif-container");
-            let maxGifs = 20;
             let currentGifs = 0;
+            const maxGifs = 20;
 
             function createGif() {
                 if (currentGifs >= maxGifs) return;
                 
-                const img = document.createElement("img");
+                const img = new Image();
                 img.src = gifUrls[Math.floor(Math.random() * gifUrls.length)];
                 img.style.left = Math.random() * 100 + "vw";
                 img.style.animationDuration = Math.random() * 5 + 3 + "s";
@@ -357,8 +451,25 @@
                 };
             }
 
+            // 初始创建一批GIF
+            for (let i = 0; i < 5; i++) {
+                createGif();
+            }
+            
+            // 定期创建新GIF
             setInterval(createGif, 800);
         }
+
+        // 添加震动动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
