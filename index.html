@@ -145,11 +145,18 @@
         <p>1. 我说过会弹一首曲子给你，是什么？</p>
         <input type="text" id="q1" placeholder="请输入答案">
         
-        <p>2. 2025年7月5号是什么节日？</p>
+        <p>2. 7月5号是什么节日？</p>
         <input type="text" id="q2" placeholder="请输入答案">
         
-        <p>3. 你的梦想职业，是什么？</p>
+        <p>3. 我六年级自己取的英文名是什么？</p>
         <input type="text" id="q3" placeholder="请输入答案">
+        
+        <p>4. 每年农历初一还记得要做什么吗？</p>
+        <input type="text" id="q4" placeholder="请输入答案">
+        
+        <p>5. 你的梦想职业，是什么？</p>
+        <input type="text" id="q5" placeholder="请输入答案"> 
+
         
         <br><br>
         <button onclick="checkAnswers()">提交</button>
@@ -258,13 +265,16 @@
             const answers = {
                 q1: ["童话", "story"],
                 q2: ["charity","义卖会"],
-                q3: ["老师", "小学老师"]
+                q3: ["Jack", "杰克"],
+                q4: ["烧心经", "心经"],
+                q5: ["老师", "小学老师"]
+                
             };
 
             let allCorrect = true;
             
             // 检查每个答案
-            for (let i = 1; i <= 3; i++) {
+            for (let i = 1; i <= 5; i++) {
                 const userAnswer = document.getElementById(`q${i}`).value.toLowerCase().trim();
                 const correctAnswers = answers[`q${i}`].map(a => a.toLowerCase());
                 
